@@ -124,4 +124,74 @@ const addDepartment = () => {
   });
 };
 
+const addrole = () => {
+  connection.query("SELECT * FROM roles", function (err, res) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "title",
+          type: "input",
+          message: "What is the role title? ",
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "How much does this role pay?: ",
+        },
+        {
+          name: "department_id",
+          type: "input",
+          message: "What is the department ID?: ",
+        },
+      ])
+      .then(function (answer) {
+        connection.query("INSERT INTO roles SET ?", {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: answer.department_id,
+        });
+      });
+  });
+};
 
+const addEmployee = () => {
+  connection.query("SELECT * FROM roles", function (err, res) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          name: "first_name",
+          type: "input",
+          message: "Enter employee first name: ",
+        },
+        {
+          name: "last_name",
+          type: "input",
+          message: "Enter employee last name: ",
+        },
+        {
+          name: "role_id",
+          type: "list",
+          message: "What is the employee role id? ",
+          choices: res.map((role) => role.title),
+        },
+      ])
+      .then(function (answer) {
+        const roleId = res.find((role) => role.title === answer.role_id).id;
+        connection.query(
+          "INSERT INTO employees SET ?",
+          {
+            first_name: answer.first_name,
+            last_name: answer.last_name,
+            role_id: roleId,
+          },
+          function (err) {
+            if (err) throw err;
+            console.log("Employee added!");
+            work();
+          }
+        );
+      });
+  });
+};
