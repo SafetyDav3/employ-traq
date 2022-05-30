@@ -8,10 +8,10 @@ const {
 connection.connect(function (err) {
   if (err) {
     throw err;
-    console.log(`Thread ID connection: ${connection.threadId} `);
-    task();
   }
   //   put init function here
+  console.log(`Thread ID connection: ${connection.threadId} `);
+  task();
 });
 
 const task = () => {
