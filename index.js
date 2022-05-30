@@ -1,9 +1,7 @@
 const inquirer = require("inquirer");
 const connection = require("./connection.js");
 const cTable = require("console.table");
-const {
-  connect
-} = require("./connection.js");
+const { connect } = require("./connection.js");
 
 connection.connect(function (err) {
   if (err) {
@@ -16,24 +14,26 @@ connection.connect(function (err) {
 
 const task = () => {
   inquirer
-    .prompt([{
-      name: "choice",
-      type: "list",
-      message: "Please choose from the following list: ",
-      choices: [
-        "View departments ",
-        "View roles ",
-        "View employees ",
-        "Add new department ",
-        "Add new role ",
-        "Add new employee ",
-        "Update employee role ",
-        "Remove Department ",
-        "Delete Role ",
-        "Remove Employee ",
-        "Exit application ",
-      ],
-    }, ])
+    .prompt([
+      {
+        name: "choice",
+        type: "list",
+        message: "Please choose from the following list: ",
+        choices: [
+          "View departments ",
+          "View roles ",
+          "View employees ",
+          "Add department ",
+          "Add role ",
+          "Add employee ",
+          "Update employee role ",
+          "Remove department ",
+          "Delete role ",
+          "Remove employee ",
+          "Exit application ",
+        ],
+      },
+    ])
     .then(function (answer) {
       switch (answer.choice) {
         case "View departments ":
@@ -45,28 +45,28 @@ const task = () => {
         case "View employees ":
           viewEmployees();
           break;
-        case "Add new department ":
+        case "Add department ":
           addDepartment();
           break;
-        case "Add new role ":
+        case "Add role ":
           addRole();
           break;
-        case "Add new employee ":
+        case "Add employee ":
           addEmployee();
           break;
-        case "Update role of employee ":
+        case "Update employee role ":
           updateRole();
           break;
-        case "Remove Department ":
+        case "Remove department ":
           removeDepartment();
           break;
-        case "Delete Role ":
+        case "Delete role ":
           deleteRole();
           break;
-        case "Remove Employee ":
+        case "Remove employee ":
           removeEmployee();
           break;
-        case "exit application ":
+        case "Exit application ":
           connection.end();
           break;
       }
@@ -101,18 +101,21 @@ const viewEmployees = () => {
 };
 
 const addDepartment = () => {
-  connection.query("SELECT * departments", function (err, res) {
+  connection.query("SELECT * FROM departments", function (err, res) {
     if (err) throw err;
 
     inquirer
-      .prompt([{
-        name: "department",
-        type: "input",
-        message: "Add Department Name: ",
-      }, ])
+      .prompt([
+        {
+          name: "department",
+          type: "input",
+          message: "Add Department Name: ",
+        },
+      ])
       .then(function (answer) {
         connection.query(
-          "INSERT INTO departments SET ?", {
+          "INSERT INTO departments SET ?",
+          {
             name: answer.department,
           },
           function (err) {
@@ -130,7 +133,8 @@ const addRole = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
+      .prompt([
+        {
           name: "title",
           type: "input",
           message: "What is the role title? ",
@@ -147,11 +151,21 @@ const addRole = () => {
         },
       ])
       .then(function (answer) {
-        connection.query("INSERT INTO roles SET ?", {
-          title: answer.title,
-          salary: answer.salary,
-          department_id: answer.department_id,
-        });
+        connection.query(
+          "INSERT INTO roles SET ?",
+          {
+            title: answer.title,
+            salary: answer.salary,
+            department_id: answer.department_id,
+          },
+          {
+            function(err) {
+              if (err) throw err;
+              console.log("Role added.");
+              task();
+            },
+          }
+        );
       });
   });
 };
@@ -161,7 +175,8 @@ const addEmployee = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
+      .prompt([
+        {
           name: "first_name",
           type: "input",
           message: "Enter employee first name: ",
@@ -181,7 +196,8 @@ const addEmployee = () => {
       .then(function (answer) {
         const roleId = res.find((role) => role.title === answer.role_id).id;
         connection.query(
-          "INSERT INTO employees SET ?", {
+          "INSERT INTO employees SET ?",
+          {
             first_name: answer.first_name,
             last_name: answer.last_name,
             role_id: roleId,
@@ -201,7 +217,8 @@ const updateRole = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
+      .prompt([
+        {
           name: "firstName",
           type: "input",
           message: "What is the first name of the employee? ",
@@ -219,7 +236,8 @@ const updateRole = () => {
 
         connection.query(
           "UPDATE employees SET ? WHERE ?",
-          [{
+          [
+            {
               role_id: roleId,
             },
             {
@@ -241,15 +259,18 @@ const removeDepartment = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
-        name: "department",
-        type: "input",
-        message: "Which department would you like to remove? ",
-        answer: res.map((department) => department.name),
-      }, ])
+      .prompt([
+        {
+          name: "department",
+          type: "input",
+          message: "Which department would you like to remove? ",
+          answer: res.map((department) => department.name),
+        },
+      ])
       .then(function (answer) {
         connection.query(
-          "DELETE FROM departments WHERE ?", {
+          "DELETE FROM departments WHERE ?",
+          {
             name: answer.department,
           },
           function (err) {
@@ -267,15 +288,18 @@ const deleteRole = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
-        name: "roles",
-        type: "input",
-        message: "Which role would you like to remove? ",
-        answer: res.map((roles) => roles.title),
-      }, ])
+      .prompt([
+        {
+          name: "roles",
+          type: "input",
+          message: "Which role would you like to remove? ",
+          answer: res.map((roles) => roles.title),
+        },
+      ])
       .then(function (answer) {
         connection.query(
-          "DELETE FROM roles WHERE ?", {
+          "DELETE FROM roles WHERE ?",
+          {
             title: answer.roles,
           },
           function (err) {
@@ -293,7 +317,8 @@ const removeEmployee = () => {
     if (err) throw err;
 
     inquirer
-      .prompt([{
+      .prompt([
+        {
           name: "first_name",
           type: "input",
           message: "What is the first name of the employee? ",
@@ -308,7 +333,8 @@ const removeEmployee = () => {
       ])
       .then(function (answer) {
         connection.query(
-          "DELETE FROM employees WHERE ?", {
+          "DELETE FROM employees WHERE ?",
+          {
             first_name: answer.first_name,
           },
           function (err) {
