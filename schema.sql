@@ -7,7 +7,6 @@ CREATE TABLE departments (
     name VARCHAR(30)
 );
 
-
 CREATE TABLE roles (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
@@ -22,6 +21,3 @@ CREATE TABLE employees (
     role_id INTEGER,
     manager_id INTEGER
 );
-
-
-

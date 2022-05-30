@@ -76,7 +76,7 @@ const task = () => {
 const viewDepartments = () => {
   connection.query("SELECT * FROM departments", function (err, res) {
     if (err) throw err;
-    
+
     console.table(res);
     task();
   });
