@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 const connection = require("./connection.js");
 const cTable = require("console.table");
-const { connect } = require("./connection.js");
+// const { connect } = require("./connection.js");
 
 connection.connect(function (err) {
   if (err) {
@@ -129,7 +129,7 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-  connection.query("SELECT * FROM roles", function (err, res) {
+  connection.query("SELECT * FROM departments", function (err, res) {
     if (err) throw err;
 
     inquirer
@@ -146,24 +146,28 @@ const addRole = () => {
         },
         {
           name: "department_id",
-          type: "input",
+          type: "list",
           message: "What is the department ID?: ",
+          choices: res.map((department) => department.name),
         },
       ])
       .then(function (answer) {
+        const departmentName = res.find(
+          (department) => department.name === answer.department_id
+        );
+
         connection.query(
           "INSERT INTO roles SET ?",
           {
             title: answer.title,
             salary: answer.salary,
-            department_id: answer.department_id,
+            department_id: departmentName.id,
           },
-          {
-            function(err) {
-              if (err) throw err;
-              console.log("Role added.");
-              task();
-            },
+
+          function (err) {
+            if (err) throw err;
+            console.log("Role added.");
+            task();
           }
         );
       });
@@ -305,7 +309,7 @@ const deleteRole = () => {
           function (err) {
             if (err) throw err;
             console.log("Role removed. ");
-            work();
+            task();
           }
         );
       });
@@ -340,7 +344,7 @@ const removeEmployee = () => {
           function (err) {
             if (err) throw err;
             console.log("Employee deleted. ");
-            work();
+            task();
           }
         );
       });
