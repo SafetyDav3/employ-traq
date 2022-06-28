@@ -30,14 +30,22 @@ And lastly we have the roles with in the company. ↓
 <br>
 <br>
 
-All of the data in these tables may be viewed, updated, created or deleted. And a short video showing the application in use is at the following link: 
+All of the data in these tables may be viewed, updated, created or deleted. And a short video showing the application in use is at the following link: [YouTube](https://www.youtube.com/watch?v=wBGPVqtD-54)
+<br>
+<br>
+
+***
+<br>
+
 ## Dependencies 
 
 * Node.js
 * Inquirer
 * MySQL2
-
-
+<br>
+<br>
+<br>
+<br>
 
 
 #### Footnotes
